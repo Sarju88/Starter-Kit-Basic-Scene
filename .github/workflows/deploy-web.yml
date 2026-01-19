@@ -29,7 +29,12 @@ jobs:
           mkdir -p /github/home/.local/share/godot/export_templates/4.5.1.stable
           curl -L -o /tmp/Godot_v4.5.1-stable_export_templates.tpz \
             https://github.com/godotengine/godot/releases/download/4.5.1-stable/Godot_v4.5.1-stable_export_templates.tpz
-          unzip -q /tmp/Godot_v4.5.1-stable_export_templates.tpz -d /github/home/.local/share/godot/export_templates/4.5.1.stable
+          unzip -q /tmp/Godot_v4.5.1-stable_export_templates.tpz -d /tmp/godot_templates
+          if [ -d /tmp/godot_templates/templates ]; then \
+            mv /tmp/godot_templates/templates/* /github/home/.local/share/godot/export_templates/4.5.1.stable/; \
+          else \
+            mv /tmp/godot_templates/* /github/home/.local/share/godot/export_templates/4.5.1.stable/; \
+          fi
 
       - name: Export HTML5
         run: |
