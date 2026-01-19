@@ -35,7 +35,34 @@ var _last_position: Vector3 = Vector3.ZERO
 var _net_timer: float = 0.0
 var _net_interval: float = 0.05
 
+func _ensure_input_actions() -> void:
+	_add_action_key("move_forward", KEY_W)
+	_add_action_key("move_back", KEY_S)
+	_add_action_key("move_left", KEY_A)
+	_add_action_key("move_right", KEY_D)
+	_add_action_key("move_up", KEY_SPACE)
+	_add_action_key("move_down", KEY_SHIFT)
+	_add_action_key("move_fast", KEY_CTRL)
+	_add_action_mouse("fire", MOUSE_BUTTON_LEFT)
+
+func _add_action_key(action: String, keycode: Key) -> void:
+	if not InputMap.has_action(action):
+		InputMap.add_action(action)
+	if InputMap.action_get_events(action).is_empty():
+		var event := InputEventKey.new()
+		event.keycode = keycode
+		InputMap.action_add_event(action, event)
+
+func _add_action_mouse(action: String, button_index: MouseButton) -> void:
+	if not InputMap.has_action(action):
+		InputMap.add_action(action)
+	if InputMap.action_get_events(action).is_empty():
+		var event := InputEventMouseButton.new()
+		event.button_index = button_index
+		InputMap.action_add_event(action, event)
+
 func _ready() -> void:
+	_ensure_input_actions()
 	hit_points = max_hit_points
 	var euler := rotation
 	_yaw = euler.y
@@ -60,7 +87,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		rotation.y = _yaw
 		if camera:
 			camera.rotation.x = _pitch
-	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
+	if event is InputEventAction and event.action == "fire":
 		_is_firing = event.pressed
 
 func _physics_process(delta: float) -> void:
@@ -75,30 +102,31 @@ func _physics_process(delta: float) -> void:
 	right.y = 0.0
 	right = right.normalized()
 
-	if Input.is_key_pressed(KEY_W):
+	if Input.is_action_pressed("move_forward"):
 		move_dir += forward
-	if Input.is_key_pressed(KEY_S):
+	if Input.is_action_pressed("move_back"):
 		move_dir -= forward
-	if Input.is_key_pressed(KEY_D):
+	if Input.is_action_pressed("move_right"):
 		move_dir += right
-	if Input.is_key_pressed(KEY_A):
+	if Input.is_action_pressed("move_left"):
 		move_dir -= right
-	if Input.is_key_pressed(KEY_SPACE):
+	if Input.is_action_pressed("move_up"):
 		move_dir += Vector3.UP
-	if Input.is_key_pressed(KEY_SHIFT):
+	if Input.is_action_pressed("move_down"):
 		move_dir -= Vector3.UP
 
 	if move_dir != Vector3.ZERO:
 		move_dir = move_dir.normalized()
 
 	var speed := move_speed
-	if Input.is_key_pressed(KEY_CTRL):
+	if Input.is_action_pressed("move_fast"):
 		speed = fast_speed
 
 	velocity = move_dir * speed
 	move_and_slide()
 	_update_footsteps(delta)
 	_fire_timer = maxf(0.0, _fire_timer - delta)
+	_is_firing = Input.is_action_pressed("fire")
 	if _is_firing:
 		_fire()
 	_sync_transform(delta)
