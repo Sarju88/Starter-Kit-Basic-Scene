@@ -18,7 +18,7 @@ jobs:
   export-web:
     runs-on: ubuntu-latest
     container:
-      image: registry.hub.docker.com/library/barichello/godot-ci:4.4.0
+      image: ghcr.io/abarichello/godot-ci:4.5.1
     steps:
       - uses: actions/checkout@v4
 
