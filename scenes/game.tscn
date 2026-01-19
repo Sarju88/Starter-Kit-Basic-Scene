@@ -267,7 +267,7 @@ vertical_alignment = 1
 
 [node name="SprintButton" type="TextureButton" parent="MobileControls/Root/ActionPad" groups=["mobile_action_buttons"]]
 custom_minimum_size = Vector2(140, 56)
-texture_normal = ExtResource("19_button_circle_wide")
+texture_normal = ExtResource("18_button_circle")
 ignore_texture_size = true
 stretch_mode = 2
 metadata/action_name = "move_fast"
