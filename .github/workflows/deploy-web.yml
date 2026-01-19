@@ -22,6 +22,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Install export templates
+        run: |
+          apt-get update
+          apt-get install -y unzip
+          mkdir -p /github/home/.local/share/godot/export_templates/4.5.1.stable
+          curl -L -o /tmp/Godot_v4.5.1-stable_export_templates.tpz \
+            https://github.com/godotengine/godot/releases/download/4.5.1-stable/Godot_v4.5.1-stable_export_templates.tpz
+          unzip -q /tmp/Godot_v4.5.1-stable_export_templates.tpz -d /github/home/.local/share/godot/export_templates/4.5.1.stable
+
       - name: Export HTML5
         run: |
           mkdir -p build/web
