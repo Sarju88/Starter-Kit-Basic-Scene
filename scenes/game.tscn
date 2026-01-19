@@ -1,4 +1,4 @@
-[gd_scene load_steps=20 format=3 uid="uid://dkitosr0k5cbl"]
+[gd_scene load_steps=19 format=3 uid="uid://dkitosr0k5cbl"]
 
 [ext_resource type="Environment" uid="uid://cm77bbr0io118" path="res://scenes/main-environment.tres" id="1_env"]
 [ext_resource type="Script" uid="uid://ory1gl6wk22i" path="res://scripts/maze_generator.gd" id="2_maze_gen"]
@@ -15,7 +15,6 @@
 [ext_resource type="Texture2D" path="res://mobile-controls-1/Sprites/Style H/Default/dpad_element_west.png" id="16_dpad_west"]
 [ext_resource type="Texture2D" path="res://mobile-controls-1/Sprites/Style H/Default/dpad_element_east.png" id="17_dpad_east"]
 [ext_resource type="Texture2D" path="res://mobile-controls-1/Sprites/Style H/Default/button_circle.png" id="18_button_circle"]
-[ext_resource type="Texture2D" path="res://mobile-controls-1/Sprites/Style H/Default/button_circle_wide.png" id="19_button_circle_wide"]
 
 [sub_resource type="SphereShape3D" id="2"]
 radius = 0.6
@@ -132,7 +131,7 @@ theme_override_constants/separation = 6
 custom_minimum_size = Vector2(64, 64)
 
 [node name="MoveUp" type="TextureButton" parent="MobileControls/Root/MovePad/UpRow" groups=["mobile_action_buttons"]]
-custom_minimum_size = Vector2(96, 96)
+custom_minimum_size = Vector2(120, 120)
 texture_normal = ExtResource("18_button_circle")
 ignore_texture_size = true
 stretch_mode = 2
@@ -144,11 +143,11 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -22.0
+offset_left = -36.0
 offset_top = -10.0
-offset_right = 22.0
+offset_right = 36.0
 offset_bottom = 10.0
-text = "UP"
+text = "FORWARD"
 horizontal_alignment = 1
 vertical_alignment = 1
 
@@ -159,7 +158,7 @@ custom_minimum_size = Vector2(64, 64)
 theme_override_constants/separation = 6
 
 [node name="MoveLeft" type="TextureButton" parent="MobileControls/Root/MovePad/MidRow" groups=["mobile_action_buttons"]]
-custom_minimum_size = Vector2(96, 96)
+custom_minimum_size = Vector2(120, 120)
 texture_normal = ExtResource("18_button_circle")
 ignore_texture_size = true
 stretch_mode = 2
@@ -183,7 +182,7 @@ vertical_alignment = 1
 custom_minimum_size = Vector2(64, 64)
 
 [node name="MoveRight" type="TextureButton" parent="MobileControls/Root/MovePad/MidRow" groups=["mobile_action_buttons"]]
-custom_minimum_size = Vector2(96, 96)
+custom_minimum_size = Vector2(120, 120)
 texture_normal = ExtResource("18_button_circle")
 ignore_texture_size = true
 stretch_mode = 2
@@ -210,7 +209,7 @@ theme_override_constants/separation = 6
 custom_minimum_size = Vector2(64, 64)
 
 [node name="MoveDown" type="TextureButton" parent="MobileControls/Root/MovePad/DownRow" groups=["mobile_action_buttons"]]
-custom_minimum_size = Vector2(96, 96)
+custom_minimum_size = Vector2(120, 120)
 texture_normal = ExtResource("18_button_circle")
 ignore_texture_size = true
 stretch_mode = 2
@@ -245,7 +244,7 @@ offset_bottom = -24.0
 theme_override_constants/separation = 10
 
 [node name="FireButton" type="TextureButton" parent="MobileControls/Root/ActionPad" groups=["mobile_action_buttons"]]
-custom_minimum_size = Vector2(120, 120)
+custom_minimum_size = Vector2(160, 160)
 texture_normal = ExtResource("18_button_circle")
 ignore_texture_size = true
 stretch_mode = 2
@@ -265,47 +264,6 @@ text = "FIRE"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="JumpButton" type="TextureButton" parent="MobileControls/Root/ActionPad" groups=["mobile_action_buttons"]]
-custom_minimum_size = Vector2(140, 64)
-texture_normal = ExtResource("19_button_circle_wide")
-ignore_texture_size = true
-stretch_mode = 2
-metadata/action_name = "move_up"
-
-[node name="JumpLabel" type="Label" parent="MobileControls/Root/ActionPad/JumpButton"]
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -28.0
-offset_top = -10.0
-offset_right = 28.0
-offset_bottom = 10.0
-text = "JUMP"
-horizontal_alignment = 1
-vertical_alignment = 1
-
-[node name="CrouchButton" type="TextureButton" parent="MobileControls/Root/ActionPad" groups=["mobile_action_buttons"]]
-custom_minimum_size = Vector2(140, 64)
-texture_normal = ExtResource("19_button_circle_wide")
-ignore_texture_size = true
-stretch_mode = 2
-metadata/action_name = "move_down"
-
-[node name="CrouchLabel" type="Label" parent="MobileControls/Root/ActionPad/CrouchButton"]
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -28.0
-offset_top = -10.0
-offset_right = 28.0
-offset_bottom = 10.0
-text = "DOWN"
-horizontal_alignment = 1
-vertical_alignment = 1
 
 [node name="SprintButton" type="TextureButton" parent="MobileControls/Root/ActionPad" groups=["mobile_action_buttons"]]
 custom_minimum_size = Vector2(140, 56)
