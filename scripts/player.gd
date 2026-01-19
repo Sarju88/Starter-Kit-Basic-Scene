@@ -70,6 +70,7 @@ func _ready() -> void:
 		_pitch = camera.rotation.x
 		camera.current = is_multiplayer_authority()
 	_update_mouse_mode()
+	call_deferred("_request_pointer_lock")
 	_last_position = global_position
 	_apply_initial_skin()
 	_update_visual_visibility()
@@ -80,6 +81,8 @@ func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventKey and event.keycode == KEY_ESCAPE and event.pressed and not event.echo:
 		capture_mouse = not capture_mouse
 		_update_mouse_mode()
+	if event is InputEventMouseButton and event.pressed and capture_mouse:
+		_request_pointer_lock()
 	if event is InputEventMouseMotion and capture_mouse:
 		_yaw -= event.relative.x * mouse_sensitivity
 		_pitch -= event.relative.y * mouse_sensitivity
@@ -156,6 +159,14 @@ func _update_mouse_mode() -> void:
 		Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 	else:
 		Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
+
+func _request_pointer_lock() -> void:
+	if not is_multiplayer_authority():
+		return
+	if not capture_mouse:
+		return
+	if OS.has_feature("web") and Input.get_mouse_mode() != Input.MOUSE_MODE_CAPTURED:
+		Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 
 func _update_footsteps(delta: float) -> void:
 	if not footstep_audio:
