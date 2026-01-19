@@ -24,8 +24,16 @@ var _directions: Array[Vector2i] = [
 	Vector2i(0, 1),
 	Vector2i(0, -1)
 ]
+var _defer_generation: bool = false
 
 func _ready() -> void:
+	var tree := get_tree()
+	if tree and tree.has_meta("match_mode") and str(tree.get_meta("match_mode")) == "join":
+		_defer_generation = true
+		return
+	_build_from_current_seed()
+
+func _build_from_current_seed() -> void:
 	if not use_random_seed:
 		_rng.seed = seed_value
 	else:
@@ -37,6 +45,13 @@ func _ready() -> void:
 	_build_geometry()
 	_build_navigation()
 	_place_spawn_points()
+
+func apply_seed(new_seed: int) -> void:
+	use_random_seed = false
+	seed_value = new_seed
+	_rng.seed = seed_value
+	_defer_generation = false
+	_build_from_current_seed()
 
 func _generate_maze() -> void:
 	_horizontal_walls.clear()

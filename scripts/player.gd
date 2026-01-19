@@ -44,7 +44,7 @@ func _ready() -> void:
 		camera.current = is_multiplayer_authority()
 	_update_mouse_mode()
 	_last_position = global_position
-	_apply_skin_from_settings()
+	_apply_initial_skin()
 	_update_visual_visibility()
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -116,7 +116,10 @@ func _sync_transform(delta: float) -> void:
 		return
 	_net_timer = _net_interval
 	if _manager and _manager.has_method("server_update_transform"):
-		_manager.rpc_id(1, "server_update_transform", peer_id, global_transform)
+		if multiplayer.is_server():
+			_manager.server_update_transform(peer_id, global_transform)
+		else:
+			_manager.rpc_id(1, "server_update_transform", peer_id, global_transform)
 
 func _update_mouse_mode() -> void:
 	if not is_multiplayer_authority():
@@ -149,7 +152,10 @@ func _fire() -> void:
 		return
 	if _manager and _manager.has_method("server_request_fire"):
 		var direction := -camera.global_transform.basis.z
-		_manager.rpc_id(1, "server_request_fire", _muzzle.global_transform, direction)
+		if multiplayer.is_server():
+			_manager.server_request_fire(_muzzle.global_transform, direction)
+		else:
+			_manager.rpc_id(1, "server_request_fire", _muzzle.global_transform, direction)
 	if fire_audio:
 		fire_audio.play()
 	_fire_timer = fire_cooldown
@@ -163,17 +169,33 @@ func get_peer_id() -> int:
 func reset_health() -> void:
 	hit_points = max_hit_points
 
-func _apply_skin_from_settings() -> void:
-	var skin_path := default_skin_path
+func _apply_initial_skin() -> void:
+	if is_multiplayer_authority():
+		_apply_skin_from_path(_get_local_skin_path())
+	else:
+		_apply_skin_from_path(default_skin_path)
+
+func apply_skin_path(path: String) -> void:
+	var resolved := path
+	if resolved == "":
+		resolved = default_skin_path
+	_apply_skin_from_path(resolved)
+
+func _apply_skin_from_path(path: String) -> void:
+	var texture := _load_skin_texture(path)
+	if texture == null and path != default_skin_path:
+		texture = _load_skin_texture(default_skin_path)
+	if texture == null:
+		return
+	_apply_texture_to_visuals(texture)
+
+func _get_local_skin_path() -> String:
 	var tree := get_tree()
 	if tree and tree.has_meta("player_skin_path"):
 		var meta_path := str(tree.get_meta("player_skin_path"))
 		if meta_path != "":
-			skin_path = meta_path
-	var texture := _load_skin_texture(skin_path)
-	if texture == null:
-		return
-	_apply_texture_to_visuals(texture)
+			return meta_path
+	return default_skin_path
 
 func _load_skin_texture(path: String) -> Texture2D:
 	if path == "":
