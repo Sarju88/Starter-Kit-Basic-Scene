@@ -1,0 +1,25 @@
+[remap]
+
+importer="wavefront_obj"
+importer_version=1
+type="Mesh"
+uid="uid://bm2u5ym2n75pd"
+path="res://.godot/imported/brick-wall-end.obj-115386804ab8ae6b22e2fc60117d70ea.mesh"
+
+[deps]
+
+files=["res://.godot/imported/brick-wall-end.obj-115386804ab8ae6b22e2fc60117d70ea.mesh"]
+
+source_file="res://kenney_graveyard-kit_5/Models/OBJ format/brick-wall-end.obj"
+dest_files=["res://.godot/imported/brick-wall-end.obj-115386804ab8ae6b22e2fc60117d70ea.mesh", "res://.godot/imported/brick-wall-end.obj-115386804ab8ae6b22e2fc60117d70ea.mesh"]
+
+[params]
+
+generate_tangents=true
+generate_lods=true
+generate_shadow_mesh=true
+generate_lightmap_uv2=false
+generate_lightmap_uv2_texel_size=0.2
+scale_mesh=Vector3(1, 1, 1)
+offset_mesh=Vector3(0, 0, 0)
+force_disable_mesh_compression=false

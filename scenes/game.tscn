@@ -1,0 +1,97 @@
+[gd_scene load_steps=13 format=3 uid="uid://dkitosr0k5cbl"]
+
+[ext_resource type="Environment" uid="uid://cm77bbr0io118" path="res://scenes/main-environment.tres" id="1_env"]
+[ext_resource type="Script" uid="uid://ory1gl6wk22i" path="res://scripts/maze_generator.gd" id="2_maze_gen"]
+[ext_resource type="PackedScene" uid="uid://cnw5rs5qiyxnw" path="res://sample/Mini Arena/Models/GLB format/border-corner.glb" id="3_border_corner"]
+[ext_resource type="PackedScene" uid="uid://dr26h67bx4fi7" path="res://sample/Mini Arena/Models/GLB format/border-straight.glb" id="4_border_straight"]
+[ext_resource type="Script" uid="uid://dwcqatfo052pb" path="res://scripts/trophy_area.gd" id="6_trophy_area"]
+[ext_resource type="PackedScene" uid="uid://c6djdyyexv0ax" path="res://sample/Mini Arena/Models/GLB format/trophy.glb" id="7_trophy"]
+[ext_resource type="PackedScene" path="res://scenes/projectile.tscn" id="10_projectile"]
+[ext_resource type="PackedScene" path="res://scenes/player.tscn" id="11_player"]
+[ext_resource type="Script" uid="uid://6ris4xcypswv" path="res://scripts/multiplayer_manager.gd" id="12_multiplayer_manager"]
+
+[sub_resource type="SphereShape3D" id="2"]
+radius = 0.6
+
+[sub_resource type="BoxShape3D" id="3"]
+size = Vector3(40, 0.2, 40)
+
+[sub_resource type="PlaneMesh" id="4"]
+size = Vector2(40, 40)
+
+[node name="GameRoot" type="Node3D"]
+script = ExtResource("2_maze_gen")
+cols = 8
+rows = 8
+wall_scene = ExtResource("4_border_straight")
+corner_scene = ExtResource("3_border_corner")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = ExtResource("1_env")
+
+[node name="Players" type="Node3D" parent="."]
+
+[node name="Projectiles" type="Node3D" parent="."]
+
+[node name="MultiplayerManager" type="Node" parent="."]
+script = ExtResource("12_multiplayer_manager")
+player_scene = ExtResource("11_player")
+projectile_scene = ExtResource("10_projectile")
+
+[node name="StartLabel" type="Label3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
+text = "Game Scene Loaded"
+
+[node name="Maze" type="Node3D" parent="."]
+
+[node name="TrophyZone" type="Area3D" parent="."]
+script = ExtResource("6_trophy_area")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="TrophyZone"]
+shape = SubResource("2")
+
+[node name="Trophy" parent="TrophyZone" instance=ExtResource("7_trophy")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.2, 0)
+
+[node name="Floor" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.1, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Floor"]
+shape = SubResource("3")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Floor"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.04754305, 0.13094115, -0.107485056)
+mesh = SubResource("4")
+
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="Crosshair" type="Label" parent="UI"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -8.0
+offset_top = -8.0
+offset_right = 8.0
+offset_bottom = 8.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 36
+text = "+"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ScoreLabel" type="Label" parent="UI"]
+offset_left = 16.0
+offset_top = 16.0
+offset_right = 240.0
+offset_bottom = 48.0
+text = "Score: 0"
+
+[node name="ConnectionLabel" type="Label" parent="UI"]
+offset_left = 16.0
+offset_top = 48.0
+offset_right = 380.0
+offset_bottom = 80.0
+text = "Status: Offline"

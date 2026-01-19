@@ -1,0 +1,25 @@
+[remap]
+
+importer="wavefront_obj"
+importer_version=1
+type="Mesh"
+uid="uid://copidj83jl3fa"
+path="res://.godot/imported/character-p.obj-668a9b1fad621e4e6b7342fce3d94abd.mesh"
+
+[deps]
+
+files=["res://.godot/imported/character-p.obj-668a9b1fad621e4e6b7342fce3d94abd.mesh"]
+
+source_file="res://kenney_blocky-characters_20/Models/OBJ format/character-p.obj"
+dest_files=["res://.godot/imported/character-p.obj-668a9b1fad621e4e6b7342fce3d94abd.mesh", "res://.godot/imported/character-p.obj-668a9b1fad621e4e6b7342fce3d94abd.mesh"]
+
+[params]
+
+generate_tangents=true
+generate_lods=true
+generate_shadow_mesh=true
+generate_lightmap_uv2=false
+generate_lightmap_uv2_texel_size=0.2
+scale_mesh=Vector3(1, 1, 1)
+offset_mesh=Vector3(0, 0, 0)
+force_disable_mesh_compression=false

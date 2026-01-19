@@ -1,0 +1,25 @@
+[remap]
+
+importer="wavefront_obj"
+importer_version=1
+type="Mesh"
+uid="uid://2w3a3wmu8rbb"
+path="res://.godot/imported/candle-multiple.obj-030b295a92fa1f78169e1936a0e4a18e.mesh"
+
+[deps]
+
+files=["res://.godot/imported/candle-multiple.obj-030b295a92fa1f78169e1936a0e4a18e.mesh"]
+
+source_file="res://kenney_graveyard-kit_5/Models/OBJ format/candle-multiple.obj"
+dest_files=["res://.godot/imported/candle-multiple.obj-030b295a92fa1f78169e1936a0e4a18e.mesh", "res://.godot/imported/candle-multiple.obj-030b295a92fa1f78169e1936a0e4a18e.mesh"]
+
+[params]
+
+generate_tangents=true
+generate_lods=true
+generate_shadow_mesh=true
+generate_lightmap_uv2=false
+generate_lightmap_uv2_texel_size=0.2
+scale_mesh=Vector3(1, 1, 1)
+offset_mesh=Vector3(0, 0, 0)
+force_disable_mesh_compression=false

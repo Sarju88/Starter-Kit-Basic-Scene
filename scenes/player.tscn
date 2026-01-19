@@ -1,0 +1,47 @@
+[gd_scene load_steps=8 format=3 uid="uid://player_scene_01"]
+
+[ext_resource type="Script" path="res://scripts/player.gd" id="1"]
+[ext_resource type="PackedScene" uid="uid://b4w2attyvv8jp" path="res://kenney_blaster-kit_2/Models/GLB format/blaster-r.glb" id="2_blaster"]
+[ext_resource type="PackedScene" path="res://scenes/projectile.tscn" id="3_projectile"]
+[ext_resource type="AudioStream" uid="uid://ltjwbaai6vol" path="res://Sound/footstep_concrete_000.ogg" id="4_footstep"]
+[ext_resource type="AudioStream" uid="uid://bcyf7ipljtoxn" path="res://Sound/footstep_snow_002.ogg" id="5_fire"]
+[ext_resource type="PackedScene" path="res://kenney_blocky-characters_20/Models/GLB format/character-a.glb" id="6_character"]
+
+[sub_resource type="CapsuleShape3D" id="1"]
+radius = 0.25
+height = 1.0
+
+[node name="Player" type="CharacterBody3D"]
+script = ExtResource("1")
+projectile_scene = ExtResource("3_projectile")
+
+[node name="Camera3D" type="Camera3D" parent="."]
+current = true
+fov = 62.0
+
+[node name="GunPivot" type="Node3D" parent="Camera3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.4, -0.25, -0.6)
+
+[node name="Gun" parent="Camera3D/GunPivot" instance=ExtResource("2_blaster")]
+transform = Transform3D(1.1, 0, 0, 0, 1.1, 0, 0, 0, 1.1, 0.2, -0.08, 0.18)
+
+[node name="Muzzle" type="Node3D" parent="Camera3D/GunPivot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.35, 0, -0.25)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("1")
+
+[node name="VisualRoot" type="Node3D" parent="."]
+
+[node name="Character" parent="VisualRoot" instance=ExtResource("6_character")]
+transform = Transform3D(0.85, 0, 0, 0, 0.85, 0, 0, 0, 0.85, 0, -0.9, 0)
+
+[node name="FootstepAudio" type="AudioStreamPlayer3D" parent="."]
+stream = ExtResource("4_footstep")
+volume_db = -6.0
+
+[node name="FootstepAudio2" type="AudioStreamPlayer3D" parent="."]
+stream = ExtResource("4_footstep")
+
+[node name="FireAudio" type="AudioStreamPlayer3D" parent="."]
+stream = ExtResource("5_fire")
