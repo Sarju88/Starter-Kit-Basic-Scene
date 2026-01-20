@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=3 uid="uid://dkitosr0k5cbl"]
+[gd_scene load_steps=15 format=3 uid="uid://dkitosr0k5cbl"]
 
 [ext_resource type="Environment" uid="uid://cm77bbr0io118" path="res://scenes/main-environment.tres" id="1_env"]
 [ext_resource type="Script" uid="uid://ory1gl6wk22i" path="res://scripts/maze_generator.gd" id="2_maze_gen"]
@@ -9,12 +9,8 @@
 [ext_resource type="PackedScene" path="res://scenes/projectile.tscn" id="10_projectile"]
 [ext_resource type="PackedScene" path="res://scenes/player.tscn" id="11_player"]
 [ext_resource type="Script" uid="uid://6ris4xcypswv" path="res://scripts/multiplayer_manager.gd" id="12_multiplayer_manager"]
-[ext_resource type="Script" path="res://scripts/mobile_controls.gd" id="13_mobile_controls"]
-[ext_resource type="Texture2D" path="res://mobile-controls-1/Sprites/Style H/Default/dpad_element_north.png" id="14_dpad_north"]
-[ext_resource type="Texture2D" path="res://mobile-controls-1/Sprites/Style H/Default/dpad_element_south.png" id="15_dpad_south"]
-[ext_resource type="Texture2D" path="res://mobile-controls-1/Sprites/Style H/Default/dpad_element_west.png" id="16_dpad_west"]
-[ext_resource type="Texture2D" path="res://mobile-controls-1/Sprites/Style H/Default/dpad_element_east.png" id="17_dpad_east"]
-[ext_resource type="Texture2D" path="res://mobile-controls-1/Sprites/Style H/Default/button_circle.png" id="18_button_circle"]
+[ext_resource type="Script" uid="uid://b4vs35efqf0n1" path="res://scripts/mobile_controls.gd" id="13_mobile_controls"]
+[ext_resource type="Texture2D" uid="uid://d0xpvyy1jvaae" path="res://mobile-controls-1/Sprites/Style H/Default/button_circle.png" id="18_button_circle"]
 
 [sub_resource type="SphereShape3D" id="2"]
 radius = 0.6
@@ -114,9 +110,8 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="MovePad" type="VBoxContainer" parent="MobileControls/Root"]
-anchor_left = 0.0
+layout_mode = 0
 anchor_top = 1.0
-anchor_right = 0.0
 anchor_bottom = 1.0
 offset_left = 24.0
 offset_top = -240.0
@@ -125,20 +120,22 @@ offset_bottom = -24.0
 theme_override_constants/separation = 6
 
 [node name="UpRow" type="HBoxContainer" parent="MobileControls/Root/MovePad"]
+layout_mode = 2
 theme_override_constants/separation = 6
 
 [node name="UpSpacerLeft" type="Control" parent="MobileControls/Root/MovePad/UpRow"]
 custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
 
 [node name="MoveUp" type="TextureButton" parent="MobileControls/Root/MovePad/UpRow" groups=["mobile_action_buttons"]]
 custom_minimum_size = Vector2(120, 120)
+layout_mode = 2
 texture_normal = ExtResource("18_button_circle")
 ignore_texture_size = true
-stretch_mode = 2
 metadata/action_name = "move_forward"
 
 [node name="MoveUpLabel" type="Label" parent="MobileControls/Root/MovePad/UpRow/MoveUp"]
-anchors_preset = 8
+layout_mode = 0
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
@@ -153,19 +150,21 @@ vertical_alignment = 1
 
 [node name="UpSpacerRight" type="Control" parent="MobileControls/Root/MovePad/UpRow"]
 custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
 
 [node name="MidRow" type="HBoxContainer" parent="MobileControls/Root/MovePad"]
+layout_mode = 2
 theme_override_constants/separation = 6
 
 [node name="MoveLeft" type="TextureButton" parent="MobileControls/Root/MovePad/MidRow" groups=["mobile_action_buttons"]]
 custom_minimum_size = Vector2(120, 120)
+layout_mode = 2
 texture_normal = ExtResource("18_button_circle")
 ignore_texture_size = true
-stretch_mode = 2
 metadata/action_name = "move_left"
 
 [node name="MoveLeftLabel" type="Label" parent="MobileControls/Root/MovePad/MidRow/MoveLeft"]
-anchors_preset = 8
+layout_mode = 0
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
@@ -180,16 +179,17 @@ vertical_alignment = 1
 
 [node name="MidSpacer" type="Control" parent="MobileControls/Root/MovePad/MidRow"]
 custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
 
 [node name="MoveRight" type="TextureButton" parent="MobileControls/Root/MovePad/MidRow" groups=["mobile_action_buttons"]]
 custom_minimum_size = Vector2(120, 120)
+layout_mode = 2
 texture_normal = ExtResource("18_button_circle")
 ignore_texture_size = true
-stretch_mode = 2
 metadata/action_name = "move_right"
 
 [node name="MoveRightLabel" type="Label" parent="MobileControls/Root/MovePad/MidRow/MoveRight"]
-anchors_preset = 8
+layout_mode = 0
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
@@ -203,20 +203,22 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="DownRow" type="HBoxContainer" parent="MobileControls/Root/MovePad"]
+layout_mode = 2
 theme_override_constants/separation = 6
 
 [node name="DownSpacerLeft" type="Control" parent="MobileControls/Root/MovePad/DownRow"]
 custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
 
 [node name="MoveDown" type="TextureButton" parent="MobileControls/Root/MovePad/DownRow" groups=["mobile_action_buttons"]]
 custom_minimum_size = Vector2(120, 120)
+layout_mode = 2
 texture_normal = ExtResource("18_button_circle")
 ignore_texture_size = true
-stretch_mode = 2
 metadata/action_name = "move_back"
 
 [node name="MoveDownLabel" type="Label" parent="MobileControls/Root/MovePad/DownRow/MoveDown"]
-anchors_preset = 8
+layout_mode = 0
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
@@ -231,8 +233,10 @@ vertical_alignment = 1
 
 [node name="DownSpacerRight" type="Control" parent="MobileControls/Root/MovePad/DownRow"]
 custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
 
 [node name="ActionPad" type="VBoxContainer" parent="MobileControls/Root"]
+layout_mode = 0
 anchor_left = 1.0
 anchor_top = 1.0
 anchor_right = 1.0
@@ -245,13 +249,13 @@ theme_override_constants/separation = 10
 
 [node name="FireButton" type="TextureButton" parent="MobileControls/Root/ActionPad" groups=["mobile_action_buttons"]]
 custom_minimum_size = Vector2(160, 160)
+layout_mode = 2
 texture_normal = ExtResource("18_button_circle")
 ignore_texture_size = true
-stretch_mode = 2
 metadata/action_name = "fire"
 
 [node name="FireLabel" type="Label" parent="MobileControls/Root/ActionPad/FireButton"]
-anchors_preset = 8
+layout_mode = 0
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
@@ -264,16 +268,15 @@ text = "FIRE"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-
 [node name="SprintButton" type="TextureButton" parent="MobileControls/Root/ActionPad" groups=["mobile_action_buttons"]]
 custom_minimum_size = Vector2(140, 56)
+layout_mode = 2
 texture_normal = ExtResource("18_button_circle")
 ignore_texture_size = true
-stretch_mode = 2
 metadata/action_name = "move_fast"
 
 [node name="SprintLabel" type="Label" parent="MobileControls/Root/ActionPad/SprintButton"]
-anchors_preset = 8
+layout_mode = 0
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5

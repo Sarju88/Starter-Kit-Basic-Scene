@@ -81,6 +81,12 @@ func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventKey and event.keycode == KEY_ESCAPE and event.pressed and not event.echo:
 		capture_mouse = not capture_mouse
 		_update_mouse_mode()
+	if event is InputEventAction and event.action == "fire":
+		_is_firing = event.pressed
+
+func _input(event: InputEvent) -> void:
+	if not is_multiplayer_authority():
+		return
 	if event is InputEventMouseButton and event.pressed and capture_mouse:
 		_request_pointer_lock()
 	if event is InputEventMouseMotion and capture_mouse:
@@ -90,8 +96,6 @@ func _unhandled_input(event: InputEvent) -> void:
 		rotation.y = _yaw
 		if camera:
 			camera.rotation.x = _pitch
-	if event is InputEventAction and event.action == "fire":
-		_is_firing = event.pressed
 
 func _physics_process(delta: float) -> void:
 	if not is_multiplayer_authority():
