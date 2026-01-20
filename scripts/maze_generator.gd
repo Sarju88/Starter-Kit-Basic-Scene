@@ -115,7 +115,7 @@ func _build_geometry() -> void:
 				wall.scale.x *= cell_size
 				wall.scale.y *= 4.0
 				maze_root.add_child(wall)
-				_add_wall_collider(wall.transform.origin, false)
+				_add_wall_collider(wall, false)
 
 	for r in range(rows):
 		for c in range(cols + 1):
@@ -128,7 +128,7 @@ func _build_geometry() -> void:
 				wall_v.scale.x *= cell_size
 				wall_v.scale.y *= 4.0
 				maze_root.add_child(wall_v)
-				_add_wall_collider(wall_v.transform.origin, true)
+				_add_wall_collider(wall_v, true)
 
 	_place_corners(origin)
 
@@ -187,18 +187,56 @@ func _clear_maze() -> void:
 	for child in maze_root.get_children():
 		child.queue_free()
 
-func _add_wall_collider(origin: Vector3, is_vertical: bool) -> void:
+func _add_wall_collider(wall_node: Node3D, is_vertical: bool) -> void:
 	var body := StaticBody3D.new()
 	var shape := BoxShape3D.new()
+	var height := _get_wall_collider_height(wall_node)
 	if is_vertical:
-		shape.size = Vector3(0.6, _wall_height, cell_size)
+		shape.size = Vector3(0.6, height, cell_size)
 	else:
-		shape.size = Vector3(cell_size, _wall_height, 0.6)
+		shape.size = Vector3(cell_size, height, 0.6)
 	var collider := CollisionShape3D.new()
 	collider.shape = shape
 	body.add_child(collider)
-	body.transform.origin = origin + Vector3(0, _wall_height * 0.5, 0)
+	var wall_pos := wall_node.transform.origin
+	body.transform.origin = wall_pos + Vector3(0, height * 0.5, 0)
 	maze_root.add_child(body)
+
+func _get_wall_collider_height(wall_node: Node3D) -> float:
+	if wall_node == null:
+		return _wall_height
+	var result := _collect_mesh_aabb(wall_node)
+	if not result["has"]:
+		return _wall_height
+	var bounds: AABB = result["aabb"]
+	var height := bounds.size.y * absf(wall_node.scale.y)
+	if height <= 0.01:
+		return _wall_height
+	return height
+
+func _collect_mesh_aabb(node: Node3D) -> Dictionary:
+	var has := false
+	var combined := AABB()
+	for child in node.get_children():
+		if child is MeshInstance3D:
+			var mesh_child := child as MeshInstance3D
+			var aabb := mesh_child.get_aabb()
+			aabb = aabb.transformed(mesh_child.transform)
+			if not has:
+				combined = aabb
+				has = true
+			else:
+				combined = combined.merge(aabb)
+		elif child is Node3D:
+			var nested := _collect_mesh_aabb(child as Node3D)
+			if nested["has"]:
+				var nested_aabb: AABB = nested["aabb"]
+				if not has:
+					combined = nested_aabb
+					has = true
+				else:
+					combined = combined.merge(nested_aabb)
+	return {"has": has, "aabb": combined}
 
 func get_origin_offset() -> Vector3:
 	return _origin_cache
