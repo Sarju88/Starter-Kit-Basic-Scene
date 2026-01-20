@@ -100,6 +100,8 @@ func _on_host_start_pressed() -> void:
 	var port := int(_port_edit.text.strip_edges())
 	var max_players := int(_max_players_edit.text.strip_edges())
 	var server_name := _server_name_edit.text.strip_edges()
+	if OS.has_feature("web"):
+		Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 	get_tree().set_meta("match_mode", "host")
 	get_tree().set_meta("host_port", port)
 	get_tree().set_meta("host_max_players", max_players)
@@ -112,6 +114,8 @@ func _on_host_back_pressed() -> void:
 func _on_join_start_pressed() -> void:
 	var address := _address_edit.text.strip_edges()
 	var port := int(_join_port_edit.text.strip_edges())
+	if OS.has_feature("web"):
+		Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 	get_tree().set_meta("match_mode", "join")
 	get_tree().set_meta("join_address", address)
 	get_tree().set_meta("join_port", port)

@@ -15,7 +15,7 @@ extends Node3D
 var _horizontal_walls: Array = []
 var _vertical_walls: Array = []
 var _rng: RandomNumberGenerator = RandomNumberGenerator.new()
-var _wall_height: float = 8.0
+var _wall_height: float = 2.0
 var _origin_cache: Vector3 = Vector3.ZERO
 var _astar: AStar2D = AStar2D.new()
 var _directions: Array[Vector2i] = [
@@ -113,7 +113,7 @@ func _build_geometry() -> void:
 				var z := origin.z + r * cell_size
 				wall.transform.origin = Vector3(x, 0, z)
 				wall.scale.x *= cell_size
-				wall.scale.y *= 4.0
+				wall.scale.y *= 1.0
 				maze_root.add_child(wall)
 				_add_wall_collider(wall.transform.origin, false)
 
@@ -126,7 +126,7 @@ func _build_geometry() -> void:
 				wall_v.transform.origin = Vector3(x_v, 0, z_v)
 				wall_v.rotate_y(PI * 0.5)
 				wall_v.scale.x *= cell_size
-				wall_v.scale.y *= 4.0
+				wall_v.scale.y *= 1.0
 				maze_root.add_child(wall_v)
 				_add_wall_collider(wall_v.transform.origin, true)
 
