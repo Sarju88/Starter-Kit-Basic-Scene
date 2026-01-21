@@ -205,38 +205,26 @@ func _add_wall_collider(wall_node: Node3D, is_vertical: bool) -> void:
 func _get_wall_collider_height(wall_node: Node3D) -> float:
 	if wall_node == null:
 		return _wall_height
-	var result := _collect_mesh_aabb(wall_node)
-	if not result["has"]:
-		return _wall_height
-	var bounds: AABB = result["aabb"]
-	var height := bounds.size.y * absf(wall_node.scale.y)
+	var height := _get_max_mesh_height(wall_node)
 	if height <= 0.01:
 		return _wall_height
 	return height
 
-func _collect_mesh_aabb(node: Node3D) -> Dictionary:
-	var has := false
-	var combined := AABB()
+func _get_max_mesh_height(node: Node3D) -> float:
+	var max_height := 0.0
 	for child in node.get_children():
 		if child is MeshInstance3D:
 			var mesh_child := child as MeshInstance3D
 			var aabb := mesh_child.get_aabb()
-			aabb = aabb.transformed(mesh_child.transform)
-			if not has:
-				combined = aabb
-				has = true
-			else:
-				combined = combined.merge(aabb)
+			var scale_y := mesh_child.global_transform.basis.get_scale().y
+			var height := aabb.size.y * absf(scale_y)
+			if height > max_height:
+				max_height = height
 		elif child is Node3D:
-			var nested := _collect_mesh_aabb(child as Node3D)
-			if nested["has"]:
-				var nested_aabb: AABB = nested["aabb"]
-				if not has:
-					combined = nested_aabb
-					has = true
-				else:
-					combined = combined.merge(nested_aabb)
-	return {"has": has, "aabb": combined}
+			var nested_height := _get_max_mesh_height(child as Node3D)
+			if nested_height > max_height:
+				max_height = nested_height
+	return max_height
 
 func get_origin_offset() -> Vector3:
 	return _origin_cache
