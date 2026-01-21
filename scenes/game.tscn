@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://dkitosr0k5cbl"]
+[gd_scene load_steps=17 format=3 uid="uid://dkitosr0k5cbl"]
 
 [ext_resource type="Environment" uid="uid://cm77bbr0io118" path="res://scenes/main-environment.tres" id="1_env"]
 [ext_resource type="Script" uid="uid://ory1gl6wk22i" path="res://scripts/maze_generator.gd" id="2_maze_gen"]
@@ -8,6 +8,7 @@
 [ext_resource type="PackedScene" uid="uid://c6djdyyexv0ax" path="res://sample/Mini Arena/Models/GLB format/trophy.glb" id="7_trophy"]
 [ext_resource type="PackedScene" path="res://scenes/projectile.tscn" id="10_projectile"]
 [ext_resource type="PackedScene" path="res://scenes/player.tscn" id="11_player"]
+[ext_resource type="PackedScene" path="res://scenes/zombie.tscn" id="14_zombie"]
 [ext_resource type="Script" uid="uid://6ris4xcypswv" path="res://scripts/multiplayer_manager.gd" id="12_multiplayer_manager"]
 [ext_resource type="Script" uid="uid://b4vs35efqf0n1" path="res://scripts/mobile_controls.gd" id="13_mobile_controls"]
 [ext_resource type="Texture2D" uid="uid://d0xpvyy1jvaae" path="res://mobile-controls-1/Sprites/Style H/Default/button_circle.png" id="18_button_circle"]
@@ -20,6 +21,10 @@ size = Vector3(40, 0.2, 40)
 
 [sub_resource type="PlaneMesh" id="4"]
 size = Vector2(40, 40)
+
+[sub_resource type="Curve3D" id="5"]
+point_count = 4
+points = PackedVector3Array(-10, 0, -10, 0, 0, 0, 0, 0, 0, 10, 0, -10, 0, 0, 0, 0, 0, 0, 10, 0, 10, 0, 0, 0, 0, 0, 0, -10, 0, 10, 0, 0, 0, 0, 0, 0)
 
 [node name="GameRoot" type="Node3D"]
 script = ExtResource("2_maze_gen")
@@ -35,10 +40,19 @@ environment = ExtResource("1_env")
 
 [node name="Projectiles" type="Node3D" parent="."]
 
+[node name="Zombies" type="Node3D" parent="."]
+
+[node name="ZombiePaths" type="Node3D" parent="."]
+
+[node name="MainLoop" type="Path3D" parent="ZombiePaths"]
+visible = false
+curve = SubResource("5")
+
 [node name="MultiplayerManager" type="Node" parent="."]
 script = ExtResource("12_multiplayer_manager")
 player_scene = ExtResource("11_player")
 projectile_scene = ExtResource("10_projectile")
+zombie_scene = ExtResource("14_zombie")
 
 [node name="StartLabel" type="Label3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)

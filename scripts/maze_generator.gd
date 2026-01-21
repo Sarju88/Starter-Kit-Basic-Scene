@@ -155,11 +155,11 @@ func _build_navigation() -> void:
 				if not _astar.are_points_connected(id, neighbor_id):
 					_astar.connect_points(id, neighbor_id, false)
 
-func _cell_to_id(cell: Vector2i) -> int:
-	return cell.y * cols + cell.x
-
 func _is_in_bounds(cell: Vector2i) -> bool:
 	return cell.x >= 0 and cell.x < cols and cell.y >= 0 and cell.y < rows
+
+func _cell_to_id(cell: Vector2i) -> int:
+	return cell.y * cols + cell.x
 
 func _is_wall_between(a: Vector2i, b: Vector2i) -> bool:
 	if a.x == b.x:

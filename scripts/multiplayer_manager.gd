@@ -2,8 +2,10 @@ extends Node
 
 @export var player_scene: PackedScene
 @export var projectile_scene: PackedScene
+@export var zombie_scene: PackedScene
 @export var players_root_path: NodePath = NodePath("../Players")
 @export var projectiles_root_path: NodePath = NodePath("../Projectiles")
+@export var zombies_root_path: NodePath = NodePath("../Zombies")
 @export var score_label_path: NodePath = NodePath("../UI/ScoreLabel")
 @export var connection_label_path: NodePath = NodePath("../UI/ConnectionLabel")
 @export var maze_path: NodePath = NodePath("..")
@@ -16,21 +18,28 @@ extends Node
 @export var spawn_padding: float = 0.85
 @export var spawn_attempts: int = 8
 @export var wall_check_tolerance: float = 0.4
+@export var zombie_count: int = 5
 
 var _players_root: Node
 var _projectiles_root: Node
+var _zombies_root: Node
 var _score_label: Label
 var _connection_label: Label
 var _maze: Node3D
 var _scores: Dictionary = {}
 var _player_skins: Dictionary = {}
 var _maze_seed: int = 0
+var _zombie_id_counter: int = 0
+var _zombies_spawned: bool = false
+var _rng: RandomNumberGenerator = RandomNumberGenerator.new()
 var _match_time_left: float = 0.0
 var _match_active: bool = false
 
 func _ready() -> void:
+	_rng.randomize()
 	_players_root = get_node_or_null(players_root_path)
 	_projectiles_root = get_node_or_null(projectiles_root_path)
+	_zombies_root = get_node_or_null(zombies_root_path)
 	_score_label = get_node_or_null(score_label_path)
 	_connection_label = get_node_or_null(connection_label_path)
 	_maze = get_node_or_null(maze_path)
@@ -90,6 +99,7 @@ func host_match() -> void:
 	_apply_maze_seed(_maze_seed)
 	rpc("client_set_scores", _scores)
 	call_deferred("_spawn_player_for_peer", 1)
+	call_deferred("_spawn_initial_zombies")
 	if auto_start_match and expected_players <= 1:
 		_start_match()
 	_update_connection_label()
@@ -104,6 +114,7 @@ func _on_peer_connected(peer_id: int) -> void:
 	if multiplayer.is_server():
 		call_deferred("_spawn_player_for_peer", peer_id)
 		call_deferred("_sync_existing_players_to_peer", peer_id)
+		call_deferred("_sync_existing_zombies_to_peer", peer_id)
 		rpc_id(peer_id, "client_set_maze_seed", _maze_seed)
 		if auto_start_match and _should_start_match():
 			_start_match()
@@ -141,6 +152,39 @@ func _sync_existing_players_to_peer(target_peer_id: int) -> void:
 		if _player_skins.has(existing_id):
 			skin_path = str(_player_skins[existing_id])
 		rpc_id(target_peer_id, "client_spawn_player", existing_id, child.global_transform, skin_path)
+
+func _sync_existing_zombies_to_peer(target_peer_id: int) -> void:
+	if not multiplayer.is_server():
+		return
+	if _zombies_root == null:
+		return
+	for child in _zombies_root.get_children():
+		var name_str := str(child.name)
+		if not name_str.begins_with("Zombie_"):
+			continue
+		var id_str := name_str.get_slice("_", 1)
+		if id_str == "":
+			continue
+		var existing_id: int = int(id_str)
+		rpc_id(target_peer_id, "client_spawn_zombie", existing_id, child.global_transform)
+
+func _spawn_initial_zombies() -> void:
+	if not multiplayer.is_server():
+		return
+	if _zombies_spawned:
+		return
+	if zombie_scene == null or _zombies_root == null:
+		return
+	_zombies_spawned = true
+	var count: int = max(0, zombie_count)
+	var trophy_pos := _get_trophy_spawn_position()
+	for i in range(count):
+		var zombie_id := _zombie_id_counter + 1
+		_zombie_id_counter = zombie_id
+		var angle: float = (TAU / float(max(1, count))) * float(i)
+		var offset: Vector3 = Vector3(cos(angle), 0.0, sin(angle)) * 0.25
+		var spawn_transform := Transform3D(Basis.IDENTITY, trophy_pos + offset)
+		rpc("client_spawn_zombie", zombie_id, spawn_transform)
 
 func _should_start_match() -> bool:
 	var total := multiplayer.get_peers().size() + 1
@@ -203,6 +247,32 @@ func client_spawn_player(peer_id: int, spawn_transform: Transform3D, skin_path: 
 		_scores[peer_id] = 0
 	_update_score_label()
 
+@rpc("authority", "reliable", "call_local")
+func client_spawn_zombie(zombie_id: int, spawn_transform: Transform3D) -> void:
+	if zombie_scene == null or _zombies_root == null:
+		return
+	var node_name := "Zombie_%d" % zombie_id
+	if _zombies_root.has_node(node_name):
+		return
+	var zombie := zombie_scene.instantiate()
+	zombie.name = node_name
+	if zombie.has_method("set_zombie_id"):
+		zombie.call("set_zombie_id", zombie_id)
+	zombie.set_multiplayer_authority(1)
+	if zombie.has_method("set"):
+		zombie.set("multiplayer_manager_path", NodePath("../../MultiplayerManager"))
+	zombie.global_transform = spawn_transform
+	_zombies_root.add_child(zombie)
+	if multiplayer.is_server():
+		var offset := Vector3(_rng.randf_range(-0.6, 0.6), 0.0, _rng.randf_range(-0.6, 0.6))
+		zombie.global_position += offset
+
+@rpc("authority", "unreliable", "call_local")
+func client_update_zombie_transform(zombie_id: int, transform: Transform3D) -> void:
+	var node := _get_zombie(zombie_id)
+	if node:
+		node.global_transform = transform
+
 @rpc("any_peer", "reliable")
 func server_register_skin(skin_path: String) -> void:
 	if not multiplayer.is_server():
@@ -251,6 +321,14 @@ func client_update_transform(peer_id: int, transform: Transform3D) -> void:
 	var node := _get_player(peer_id)
 	if node and not node.is_multiplayer_authority():
 		node.global_transform = transform
+
+func server_update_zombie_transform(zombie_id: int, transform: Transform3D) -> void:
+	if not multiplayer.is_server():
+		return
+	var node := _get_zombie(zombie_id)
+	if node:
+		node.global_transform = transform
+	rpc("client_update_zombie_transform", zombie_id, transform)
 
 @rpc("any_peer", "reliable")
 func server_request_fire(muzzle_transform: Transform3D, direction: Vector3) -> void:
@@ -305,6 +383,11 @@ func _get_player(peer_id: int) -> Node:
 		return null
 	return _players_root.get_node_or_null("Player_%d" % peer_id)
 
+func _get_zombie(zombie_id: int) -> Node:
+	if _zombies_root == null:
+		return null
+	return _zombies_root.get_node_or_null("Zombie_%d" % zombie_id)
+
 func _get_spawn_transform(peer_id: int) -> Transform3D:
 	if _maze and _maze.has_method("get_corner_cell_world"):
 		var corner_index := (peer_id - 1) % 4
@@ -315,6 +398,35 @@ func _get_spawn_transform(peer_id: int) -> Transform3D:
 		pos.y = spawn_height
 		return Transform3D(Basis.IDENTITY, pos)
 	return Transform3D(Basis.IDENTITY, Vector3.ZERO)
+
+func _get_random_spawn_transform() -> Transform3D:
+	if _maze and _maze.has_method("get_random_cell") and _maze.has_method("get_cell_center"):
+		var cell: Vector2i = _maze.get_random_cell()
+		var pos: Vector3 = _maze.get_cell_center(cell)
+		pos.y = spawn_height
+		return Transform3D(Basis.IDENTITY, pos)
+	return Transform3D(Basis.IDENTITY, Vector3.ZERO)
+
+func _get_trophy_spawn_position() -> Vector3:
+	var trophy := get_node_or_null("../TrophyZone")
+	if trophy is Node3D:
+		var pos := (trophy as Node3D).global_position
+		pos.y = spawn_height
+		return pos
+	if _maze and _maze.get_parent():
+		var root := _maze.get_parent()
+		var alt := root.get_node_or_null("TrophyZone")
+		if alt is Node3D:
+			var alt_pos := (alt as Node3D).global_position
+			alt_pos.y = spawn_height
+			return alt_pos
+	if _players_root and _players_root.get_child_count() > 0:
+		var player := _players_root.get_child(0)
+		if player is Node3D:
+			var player_pos := (player as Node3D).global_position
+			player_pos.y = spawn_height
+			return player_pos
+	return Vector3.ZERO
 
 func _get_spawn_padding() -> float:
 	if _maze and _maze.has_method("cell_size"):
