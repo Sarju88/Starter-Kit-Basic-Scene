@@ -16,7 +16,7 @@ func _on_body_entered(body: Node) -> void:
 	if _claimed:
 		return
 	if body is CharacterBody3D:
-		if multiplayer.is_server():
+		if multiplayer.is_server() or multiplayer.multiplayer_peer == null:
 			_claimed = true
 			_award_trophy(body)
 		else:

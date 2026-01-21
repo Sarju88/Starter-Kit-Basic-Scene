@@ -30,6 +30,8 @@ func _ready() -> void:
 	var tree := get_tree()
 	if tree and tree.has_meta("match_mode") and str(tree.get_meta("match_mode")) == "join":
 		_defer_generation = true
+		if OS.has_feature("web"):
+			_build_from_current_seed()
 		return
 	_build_from_current_seed()
 
