@@ -47,7 +47,7 @@ func _unhandled_input(event: InputEvent) -> void:
 
 func _physics_process(delta: float) -> void:
 	var move_dir := Vector3.ZERO
-	var transform_basis := global_transform.basis
+	var sansform_basis := global_transform.basis
 	var forward := -transform_basis.z
 	forward.y = 0.0
 	forward = forward.normalized()

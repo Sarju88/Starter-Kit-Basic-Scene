@@ -43,6 +43,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.264682, 0, 0.295037)
 [node name="Tree" parent="Sample" instance=ExtResource("3_lyib0")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.51468, 0, 0.295037)
 script = ExtResource("7_tree")
+rotation_speed_deg = null
 
 [node name="Tree (small)" parent="Sample" instance=ExtResource("3_lyib0")]
 transform = Transform3D(0.565685, 0, 0.565685, 0, 0.8, 0, -0.565685, 0, 0.565685, -1.76468, 0, 0.795037)

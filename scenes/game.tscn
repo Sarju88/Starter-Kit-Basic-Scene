@@ -8,10 +8,17 @@
 [ext_resource type="PackedScene" uid="uid://c6djdyyexv0ax" path="res://sample/Mini Arena/Models/GLB format/trophy.glb" id="7_trophy"]
 [ext_resource type="PackedScene" path="res://scenes/projectile.tscn" id="10_projectile"]
 [ext_resource type="PackedScene" path="res://scenes/player.tscn" id="11_player"]
-[ext_resource type="PackedScene" path="res://scenes/zombie.tscn" id="14_zombie"]
 [ext_resource type="Script" uid="uid://6ris4xcypswv" path="res://scripts/multiplayer_manager.gd" id="12_multiplayer_manager"]
 [ext_resource type="Script" uid="uid://b4vs35efqf0n1" path="res://scripts/mobile_controls.gd" id="13_mobile_controls"]
+[ext_resource type="PackedScene" path="res://scenes/zombie.tscn" id="14_zombie"]
 [ext_resource type="Texture2D" uid="uid://d0xpvyy1jvaae" path="res://mobile-controls-1/Sprites/Style H/Default/button_circle.png" id="18_button_circle"]
+
+[sub_resource type="Curve3D" id="5"]
+_data = {
+"points": PackedVector3Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+"tilts": PackedFloat32Array(0, 0, 0, 0)
+}
+point_count = 4
 
 [sub_resource type="SphereShape3D" id="2"]
 radius = 0.6
@@ -21,10 +28,6 @@ size = Vector3(40, 0.2, 40)
 
 [sub_resource type="PlaneMesh" id="4"]
 size = Vector2(40, 40)
-
-[sub_resource type="Curve3D" id="5"]
-point_count = 4
-points = PackedVector3Array(-10, 0, -10, 0, 0, 0, 0, 0, 0, 10, 0, -10, 0, 0, 0, 0, 0, 0, 10, 0, 10, 0, 0, 0, 0, 0, 0, -10, 0, 10, 0, 0, 0, 0, 0, 0)
 
 [node name="GameRoot" type="Node3D"]
 script = ExtResource("2_maze_gen")

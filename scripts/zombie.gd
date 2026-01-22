@@ -142,9 +142,21 @@ func _cache_path_points() -> void:
 	var curve := _path_network.curve
 	if curve == null:
 		return
+	if curve.point_count < 2 or not _curve_has_nonzero_length(curve):
+		_path_points = PackedVector3Array()
+		return
 	_path_points = curve.get_baked_points()
 	if _path_points.size() < 2:
 		_path_points = PackedVector3Array()
+
+func _curve_has_nonzero_length(curve: Curve3D) -> bool:
+	var prev := curve.get_point_position(0)
+	for i in range(1, curve.point_count):
+		var pos := curve.get_point_position(i)
+		if prev.distance_squared_to(pos) > 0.000001:
+			return true
+		prev = pos
+	return false
 
 func _find_animation_player() -> AnimationPlayer:
 	return _find_animation_player_recursive(self)
